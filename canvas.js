@@ -1,5 +1,5 @@
 module.exports = {
-        init(io, d) { // io is socket io, d is server data
+    init(socket, d) { // socket is this user's socket, d is server data
 
-        }
+    }
 };
