@@ -7,6 +7,7 @@ module.exports = {
         socket.on('addTask', (data) => {
             if (typeof data !== 'string') { socket.emit('error', {type: 'tasks', msg: 'invalid data type: ' + (typeof data)}); return; }
             if (d.users[socket.id].session === undefined) { socket.emit('error', {type: 'tasks', msg: 'user not in session'}); return; }
+            if (d.users[socket.id].course == null) { socket.emit('error', {type: 'tasks', msg: 'user data missing'}); return; }
 
             var entry = {time: (new Date().getTime()), task: data};
             d.users[socket.id].session.tasks.history.push(entry);
