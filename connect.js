@@ -14,6 +14,14 @@ module.exports = {
         d.users[socket.id] = {socket: socket, studyingWith: null, session: null, partner: null, email: 'add email later'};
         // TODO get email from db
 
+        socket.on('setEmail', (data) => { // temporary, fix by checking with mongodb
+            if (typeof data == 'string') {
+                socket.emit('error', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data)});
+            } else {
+                d.users[socket.id].email = data;
+            }
+        });
+
         // get available users
         socket.on('getAvailable', (data) => {
             // TODO - search available users?
