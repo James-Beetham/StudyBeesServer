@@ -1,6 +1,6 @@
 /**
  * socket listeners (on): setData, makeAvailable, makeUnavailable
- * socket executors (emit): error, connect
+ * socket executors (emit): err, connect
  */
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
 
         socket.on('setData', (data) => { // data: {email, class, school, name} temporary, fix by checking with mongodb
             if (typeof data.course !== 'string') {
-                socket.emit('error', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
+                socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
             } else {
                 d.users[socket.id].course = data.course;
                 d.users[socket.id].data = data;
@@ -69,7 +69,7 @@ module.exports = {
         });
         socket.on('makeUnavailable', () => {
             if (d.courses[d.users[socket.id].course] === undefined) {
-                socket.emit('error', {type: 'connect', msg: 'user is not currently available'});
+                socket.emit('err', {type: 'connect', msg: 'user is not currently available'});
             } else {
                 d.courses[d.users[socket.id].course] = undefined;
             }
