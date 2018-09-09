@@ -61,7 +61,6 @@ module.exports = {
             } else {
                 d.users[socket.id].course = data.course;
                 d.users[socket.id].data = data;
-                console.log('course: ' + data.course);
             }
 
             if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
@@ -74,8 +73,11 @@ module.exports = {
                 d.courses[course] = undefined;
                 var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [partner.id, socket.id]};
                 d.users[socket.id].session = d.users[partner.id].session = session;
-                partner.emit('connect', d.users[socket.id].data);
-                socket.emit('connect', d.users[partner.id].data);
+                d.users[partner.id].partner = socket.id;
+                d.users[socket.id].partner = partner.id;
+                console.log('partnered up');
+                partner.emit('connectWithPartner', d.users[socket.id].data);
+                socket.emit('connectWithPartner', d.users[partner.id].data);
             }
         });
         socket.on('makeUnavailable', () => {
