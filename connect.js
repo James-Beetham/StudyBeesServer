@@ -56,29 +56,33 @@ module.exports = {
         });
         // makes user available (other users can search and connect with them)
         socket.on('makeAvailable', (data) => {
-            if (typeof data.course !== 'string') {
-                socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
-            } else {
-                d.users[socket.id].course = data.course;
-                d.users[socket.id].data = data;
-            }
+            try {
+                if (typeof data.course !== 'string') {
+                    socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
+                } else {
+                    d.users[socket.id].course = data.course;
+                    d.users[socket.id].data = data;
+                }
 
-            if (d.users[socket.id] == null) { socket.emit('error', {type: 'connect', msg: 'this should not have happend - ask james to fix'}); return; }
-            if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
-            var course = d.users[socket.id].course;
+                if (d.users[socket.id] == null) { socket.emit('error', {type: 'connect', msg: 'this should not have happend - ask james to fix'}); return; }
+                if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
+                var course = d.users[socket.id].course;
 
-            if (d.courses[course] === undefined) {
-                d.courses[course] = socket.id;
-            } else {
-                var partner = d.users[d.courses[course]].socket;
-                d.courses[course] = undefined;
-                var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [partner.id, socket.id]};
-                d.users[socket.id].session = d.users[partner.id].session = session;
-                d.users[partner.id].partner = socket.id;
-                d.users[socket.id].partner = partner.id;
-                console.log('partnered up');
-                partner.emit('connectWithPartner', d.users[socket.id].data);
-                socket.emit('connectWithPartner', d.users[partner.id].data);
+                if (d.courses[course] === undefined) {
+                    d.courses[course] = socket.id;
+                } else {
+                    var partner = d.users[d.courses[course]].socket;
+                    d.courses[course] = undefined;
+                    var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [partner.id, socket.id]};
+                    d.users[socket.id].session = d.users[partner.id].session = session;
+                    d.users[partner.id].partner = socket.id;
+                    d.users[socket.id].partner = partner.id;
+                    console.log('partnered up');
+                    partner.emit('connectWithPartner', d.users[socket.id].data);
+                    socket.emit('connectWithPartner', d.users[partner.id].data);
+                }
+            } catch (e) {
+                console.log(e.msg == null ? e : e.msg);
             }
         });
         socket.on('makeUnavailable', () => {
