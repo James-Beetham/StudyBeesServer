@@ -14,14 +14,14 @@ module.exports = {
         d.users[socket.id] = {socket: socket, session: null, partner: null, course: null, data: null};
         // TODO get email from db
 
-        socket.on('setData', (data) => { // data: {email, class, school, name} temporary, fix by checking with mongodb
-            if (typeof data.course !== 'string') {
-                socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
-            } else {
-                d.users[socket.id].course = data.course;
-                d.users[socket.id].data = data;
-            }
-        });
+        // socket.on('setData', (data) => { // data: {email, class, school, name} temporary, fix by checking with mongodb
+        //     if (typeof data.course !== 'string') {
+        //         socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
+        //     } else {
+        //         d.users[socket.id].course = data.course;
+        //         d.users[socket.id].data = data;
+        //     }
+        // });
 
         // get available users
         // socket.on('getInClass', (data) => { // returns hashmap of schools with user's socket ids linked with email
@@ -52,7 +52,14 @@ module.exports = {
         //     console.log(socket.id + ' sent connect request');
         // });
         // makes user available (other users can search and connect with them)
-        socket.on('makeAvailable', () => {
+        socket.on('makeAvailable', (data) => {
+            if (typeof data.course !== 'string') {
+                socket.emit('err', {type: 'connect', msg: 'invalid type for setEmail ' + (typeof data.email)});
+            } else {
+                d.users[socket.id].course = data.course;
+                d.users[socket.id].data = data;
+            }
+
             if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
             var course = d.users[socket.id].course;
 
