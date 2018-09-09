@@ -61,6 +61,7 @@ module.exports = {
             } else {
                 d.users[socket.id].course = data.course;
                 d.users[socket.id].data = data;
+                console.log('course: ' + data.course);
             }
 
             if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
