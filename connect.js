@@ -63,6 +63,7 @@ module.exports = {
                 d.users[socket.id].data = data;
             }
 
+            if (d.users[socket.id] == null) { socket.emit('error', {type: 'connect', msg: 'this should not have happend - ask james to fix'}; return; )}
             if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
             var course = d.users[socket.id].course;
 
