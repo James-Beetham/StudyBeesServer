@@ -7,6 +7,7 @@ module.exports = {
         socket.on('sendTask', (data) => {
             if (d.users[socket.id].session === undefined) { socket.emit('err', {type: 'tasks', msg: 'user not in session'}); return; }
             if (d.users[socket.id].course == null) { socket.emit('err', {type: 'tasks', msg: 'user data missing'}); return; }
+            if (d.users[d.users[socket.id].partner] == null) { socket.emit('err', {type: 'tasks', msg: 'partner disconnected'}); return; }
 
             var entry = {time: (new Date().getTime()), data: data};
             d.users[socket.id].session.tasks.history.push(entry);
