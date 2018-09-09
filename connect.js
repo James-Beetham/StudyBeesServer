@@ -51,6 +51,9 @@ module.exports = {
         //     }
         //     console.log(socket.id + ' sent connect request');
         // });
+        socket.on('getData', () => { // for dev purposes only!
+            socket.emit('dataDump', d);
+        });
         // makes user available (other users can search and connect with them)
         socket.on('makeAvailable', (data) => {
             if (typeof data.course !== 'string') {
@@ -63,10 +66,10 @@ module.exports = {
             if (d.users[socket.id].session != null) { socket.emit('error', {type: 'connect', msg: 'user is already in a session'}); return; }
             var course = d.users[socket.id].course;
 
-            if (d.classes[course] === undefined) {
-                d.classes[course] = socket.id;
+            if (d.courses[course] === undefined) {
+                d.courses[course] = socket.id;
             } else {
-                var partner = d.users[d.classes[course]].socket;
+                var partner = d.users[d.courses[course]].socket;
                 d.courses[course] = undefined;
                 var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [clientOne, clientTwo]};
                 d.users[socket.id].session = d.users[partner.id].session = session;
