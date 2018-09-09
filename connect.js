@@ -71,7 +71,7 @@ module.exports = {
             } else {
                 var partner = d.users[d.courses[course]].socket;
                 d.courses[course] = undefined;
-                var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [clientOne, clientTwo]};
+                var session = {chat: {history: []}, editor: {history: []}, canvas: {history: []}, tasks: {history: []}, users: [partner.id, socket.id]};
                 d.users[socket.id].session = d.users[partner.id].session = session;
                 partner.emit('connect', d.users[socket.id].data);
                 socket.emit('connect', d.users[partner.id].data);
